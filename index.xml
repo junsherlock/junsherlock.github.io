@@ -6,14 +6,14 @@
     <description>Recent content on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Tue, 20 Oct 2020 17:33:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 22 Oct 2020 13:52:57 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Test</title>
-      <link>https://junsherlock.github.io/posts/test/</link>
-      <pubDate>Tue, 20 Oct 2020 17:33:31 +0800</pubDate>
+      <title>Note for Amazon SageMaker Enablement Workshop</title>
+      <link>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</link>
+      <pubDate>Thu, 22 Oct 2020 13:52:57 +0800</pubDate>
       
-      <guid>https://junsherlock.github.io/posts/test/</guid>
-      <description>&lt;p&gt;Cut out summary from your post content here.&lt;/p&gt;</description>
+      <guid>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</guid>
+      <description>Note for Amazon SageMaker Enablement Workshop Techinical trainer: Cathy Lai ML接觸還不夠深, 上完這堂課, 我只能說&amp;quot;術業有專攻&amp;quot; 收獲最大來自講師對ML的講解 basis ML flow 基本上這張圖解</description>
     </item>
     
   </channel>
