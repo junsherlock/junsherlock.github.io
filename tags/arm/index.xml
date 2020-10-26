@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Aeric&#39;s blog</title>
-    <link>https://junsherlock.github.io/</link>
-    <description>Recent content on Aeric&#39;s blog</description>
+    <title>ARM on Aeric&#39;s blog</title>
+    <link>https://junsherlock.github.io/tags/arm/</link>
+    <description>Recent content in ARM on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 26 Oct 2020 18:23:56 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Oct 2020 18:23:56 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/arm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ARM Aarch64 Stack Operation Example</title>
       <link>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</link>
@@ -14,15 +14,6 @@
       
       <guid>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</guid>
       <description>ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used</description>
-    </item>
-    
-    <item>
-      <title>Note for Amazon SageMaker Enablement Workshop</title>
-      <link>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</link>
-      <pubDate>Thu, 22 Oct 2020 13:52:57 +0800</pubDate>
-      
-      <guid>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</guid>
-      <description>Note for Amazon SageMaker Enablement Workshop Techinical trainer: Cathy Lai ML接觸還不夠深, 上完這堂課, 我只能說&amp;quot;術業有專攻&amp;quot; 收獲最大來自講師對ML的講解 basis ML flow 基本上這張圖解</description>
     </item>
     
   </channel>

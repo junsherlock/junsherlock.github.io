@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ARM Aarch64 Stack Operation Example | Aeric&#39;s blog</title>
+
+    
+<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aeric" />
+<meta name="description" content="ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used" />
+
+
+
+<meta name="generator" content="Hugo 0.76.5" />
+
+<link rel="canonical" href="https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/" />
+
+
+<meta property="og:title" content="ARM Aarch64 Stack Operation Example" />
+<meta property="og:description" content="ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/" />
+<meta property="og:image" content="https://junsherlock.github.io/"/>
+<meta property="article:published_time" content="2020-10-26T18:23:56+08:00" />
+<meta property="article:modified_time" content="2020-10-26T18:23:56+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://junsherlock.github.io/"/>
+
+<meta name="twitter:title" content="ARM Aarch64 Stack Operation Example"/>
+<meta name="twitter:description" content="ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used"/>
+
+
+<link rel="stylesheet" href="/css/semantic.min.css" />
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="/css/OverlayScrollbars.min.css" />
+<link rel="stylesheet" href="/css/github-markdown.css" />
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  a:hover {
+    text-decoration: underline; 
+  }
+
+  
+  a {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a,
+  .inverted a:hover {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body {
+    
+    background-color: black;
+    
+
+    
+    background-image: url(images/pexels-kamil-5465018.jpg);
+    
+  }
+  
+</style>
+
+    
+
+
+  
+    <link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/gruvbox-light.min.css" />
+  
+
+
+
+
+
+  </head>
+
+  <body>
+    
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="Flip it!"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="Home" onclick="window.location.href = 'https:\/\/junsherlock.github.io\/'"></i>
+  </div>
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    
+    <section class="ui top attached segment cover">
+      <div class="cover-img" style="background-image: url(https://i.imgur.com/SZCbxlv.png);"></div>
+    </section>
+    
+    <section class="ui attached segment">
+      <header>
+        <h1 class="ui large header">
+          ARM Aarch64 Stack Operation Example
+          <div class="sub header">
+            @
+            
+              
+                Aeric
+              
+            
+
+            | 
+                Monday, Oct 26, 2020
+              
+
+            | 5 minute read
+
+            | Update at
+              
+                Monday, Oct 26, 2020
+              
+          </div>
+        </h1>
+      </header>
+
+      <article class="main"><h1 id="arm-aarch64-stack-operation-example">ARM aarch64 stack operation example</h1>
+<h2 id="前情提要">前情提要:</h2>
+<table>
+<thead>
+<tr>
+<th>AArch64 Register</th>
+<th>Special</th>
+<th>Role in the procedure call standard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x0…x7</td>
+<td></td>
+<td>Parameter/result registers</td>
+</tr>
+<tr>
+<td>x8</td>
+<td></td>
+<td>Indirect result location register</td>
+</tr>
+<tr>
+<td>x9..x15</td>
+<td></td>
+<td>Temporary registers</td>
+</tr>
+<tr>
+<td>x16</td>
+<td>IP0</td>
+<td>The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register.</td>
+</tr>
+<tr>
+<td>x17</td>
+<td>IP1</td>
+<td>The second intra-procedure-call temporary register (can be used by call veneers and PLT code); at other times may be used as a temporary register.</td>
+</tr>
+<tr>
+<td>x18</td>
+<td></td>
+<td>The Platform Register, if needed; otherwise a temporary register.</td>
+</tr>
+<tr>
+<td>x19..x28</td>
+<td></td>
+<td>Callee-saved registers</td>
+</tr>
+<tr>
+<td>x29</td>
+<td>FP</td>
+<td>The Frame Pointer. (Where the last local data is)</td>
+</tr>
+<tr>
+<td>x30</td>
+<td>LR</td>
+<td>The Link Register</td>
+</tr>
+<tr>
+<td>SP</td>
+<td></td>
+<td>The Stack Pointer. (Where local data is)</td>
+</tr>
+</tbody>
+</table>
+<pre><code>MOV    X1，X0         ;将寄存器X0的值传送到寄存器X1
+ADD    X0，X1，X2     ;寄存器X1和X2的值相加后传送到X0
+SUB    X0，X1，X2     ;寄存器X1和X2的值相减后传送到X0
+
+AND    X0，X0，#0xF    ; X0的值与0xF相位与后的值传送到X0
+ORR    X0，X0，#9      ; X0的值与9相位或后的值传送到X0
+EOR    X0，X0，#0xF    ; X0的值与0xF相异或后的值传送到X0
+
+LDR    X5，[X6，#0x08]        ；ld：load; X6寄存器加0x08的和的地址值内的数据传送到X5
+LDP  x29, x30, [sp, #0x10]    ; ldp :load pair ; 一对寄存器, 从内存读取数据到寄存器
+
+STR X0, [SP, #0x8]         ；st:store,str:往内存中写数据（偏移值为正）; X0寄存器的数据传送到SP+0x8地址值指向的存储空间
+STUR   w0, [x29, #-0x8]   ;往内存中写数据（偏移值为负）
+STP  x29, x30, [sp, #0x10]    ;store pair，存放一对数据, 入栈指令
+
+CBZ  ;比较（Compare），如果结果为零（Zero）就转移（只能跳到后面的指令）
+CBNZ ;比较，如果结果非零（Non Zero）就转移（只能跳到后面的指令）
+CMP  ;比较指令，相当于SUBS，影响程序状态寄存器CPSR 
+
+B   ;跳转指令，可带条件跳转与cmp配合使用
+BL  ;带返回的跳转指令， 返回地址保存到LR（X30）
+BLR  ; 带返回的跳转指令，跳转到指令后边跟随寄存器中保存的地址(例：blr    x8 ;跳转到x8保存的地址中去执行)
+RET   ;子程序返回指令，返回地址默认保存在LR（X30）
+</code></pre><p>其中 MOV 指令只能用於register 之間傳值
+LD 與 ST 系列(LDR/LDP/STR/STUR/STP)  用於Register 與 Memory 之間傳值</p>
+<p>Addressing:
+<a href="https://developer.arm.com/architectures/learn-the-architecture/aarch64-instruction-set-architecture/loads-and-stores-addressing">https://developer.arm.com/architectures/learn-the-architecture/aarch64-instruction-set-architecture/loads-and-stores-addressing</a></p>
+<h2 id="正文開始">正文開始:</h2>
+<p>以如下一段code 用arm cross compiler</p>
+<pre><code>//main.c
+int var = 10;
+int func(int a,int b)
+{
+    int c = 0;
+    c = a + b;
+    return c;
+}
+int main()
+{
+    int i = 2;
+    int j = 3;
+    var = func(i, j);
+    return 0;
+}
+</code></pre><p>Compiler from:
+<a href="https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/">https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/</a></p>
+<p>compiler command:</p>
+<pre><code>gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc main.c -o main
+</code></pre><p>objdump:</p>
+<pre><code>gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-objdump -D main
+</code></pre><p>然後找出 main 跟 func 的assembly</p>
+<pre><code>000000000040051c &lt;func&gt;:
+  40051c:	d10083ff 	sub	sp, sp, #0x20
+  400520:	b9000fe0 	str	w0, [sp, #12]
+  400524:	b9000be1 	str	w1, [sp, #8]
+  400528:	b9001fff 	str	wzr, [sp, #28]
+  40052c:	b9400fe1 	ldr	w1, [sp, #12]
+  400530:	b9400be0 	ldr	w0, [sp, #8]
+  400534:	0b000020 	add	w0, w1, w0
+  400538:	b9001fe0 	str	w0, [sp, #28]
+  40053c:	b9401fe0 	ldr	w0, [sp, #28]
+  400540:	910083ff 	add	sp, sp, #0x20
+  400544:	d65f03c0 	ret
+
+0000000000400548 &lt;main&gt;:
+  400548:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+  // Store pair (from reg to mem)
+  40054c:	910003fd 	mov	x29, sp
+  400550:	52800040 	mov	w0, #0x2                   	// #2
+  400554:	b9001fa0 	str	w0, [x29, #28]
+  400558:	52800060 	mov	w0, #0x3                   	// #3
+  40055c:	b9001ba0 	str	w0, [x29, #24]
+  400560:	b9401ba1 	ldr	w1, [x29, #24]
+  400564:	b9401fa0 	ldr	w0, [x29, #28]
+  400568:	97ffffed 	bl	40051c &lt;func&gt;
+  40056c:	2a0003e1 	mov	w1, w0
+  400570:	b0000080 	adrp	x0, 411000 &lt;__libc_start_main@GLIBC_2.17&gt;
+  400574:	9100a000 	add	x0, x0, #0x28
+  400578:	b9000001 	str	w1, [x0]
+  40057c:	52800000 	mov	w0, #0x0                   	// #0
+  400580:	a8c27bfd 	ldp	x29, x30, [sp], #32 // load pair register (from mem to reg)
+  400584:	d65f03c0 	ret
+  
+  ...(略)
+  
+  0000000000411028 &lt;var&gt;:
+  411028:	0000000a 	.word	0x0000000a
+
+</code></pre><p>arm64 的 LR(x30) 與 FP(x29) 在stack frame的頂部</p>
+<p><img src="https://i.imgur.com/l6f94Rj.png" alt=""></p>
+<p><img src="https://i.imgur.com/4DdXdVD.png" alt=""></p>
+<h3 id="1-stpx29-x30-sp--32">1. stp	x29, x30, [sp, #-32]!</h3>
+<pre><code>//把 sp-32 存到X29 X30
+stp	x29, x30, [sp, #-32]!
+</code></pre><p>把x29 跟 x30 Register 的value
+分別存到 &ldquo;SP指向的memory address - 32&rdquo;</p>
+<p>並且SP register value = SP-32</p>
+<p>所以這步基本上把main 的FP LR 位置定位
+並且把CPU register的SP 更新</p>
+<p><img src="https://i.imgur.com/PlWDYax.png" alt=""></p>
+<pre><code>why &quot;-32&quot;?
+
+FP 8 bytes
+LR 8 bytes
+2個變數 int  總共4 bytes x 2 = 8 bytes
+SP 需要16 bytes align, 每次移動需要是16bytes 一動
+
+8 + 8 + 8 =24, 但是須為16倍數, 故32
+
+假設main 需要5個int 變數
+承上總共需要 8(LR) + 8(FP) + 20(4 x5個int) = 36
+36 不滿16之倍數, 故需48
+
+ex assembly:
+0000000000400548 &lt;main&gt;:
+  400548:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+  40054c:	910003fd 	mov	x29, sp
+  400550:	52800040 	mov	w0, #0x2                   	// #2
+  400554:	b9002fa0 	str	w0, [x29, #44]
+  400558:	52800060 	mov	w0, #0x3                   	// #3
+  40055c:	b9002ba0 	str	w0, [x29, #40]
+  400560:	52800080 	mov	w0, #0x4                   	// #4
+  400564:	b90027a0 	str	w0, [x29, #36]
+  400568:	528000a0 	mov	w0, #0x5                   	// #5
+  40056c:	b90023a0 	str	w0, [x29, #32]
+--
+  400588:	b0000080 	adrp	x0, 411000 &lt;__libc_start_main@GLIBC_2.17&gt;
+  40058c:	9100a000 	add	x0, x0, #0x28
+  400590:	b9000001 	str	w1, [x0]
+  400594:	52800000 	mov	w0, #0x0                   	// #0
+  400598:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  40059c:	d65f03c0 	ret
+
+</code></pre><h3 id="2-movx29-sp">2. mov	x29, sp</h3>
+<pre><code>40054c:	910003fd 	mov	x29, sp
+</code></pre><p>這一步就是把最早的 SP-32 更新到 CPU Register X29 (Frame Point)</p>
+<p><img src="https://i.imgur.com/SZCbxlv.png" alt=""></p>
+<h3 id="3-update-variable">3. update variable</h3>
+<pre><code>  400550:	52800040 	mov	w0, #0x2                   	// #2
+  400554:	b9001fa0 	str	w0, [x29, #28]
+  400558:	52800060 	mov	w0, #0x3                   	// #3
+  40055c:	b9001ba0 	str	w0, [x29, #24]
+  400560:	b9401ba1 	ldr	w1, [x29, #24]
+  400564:	b9401fa0 	ldr	w0, [x29, #28]
+</code></pre><p>這邊就是把變數儲存
+先把2存到reg w0
+再把reg w0的value 存到 mem address FP+28</p>
+<p>同理
+把3存到reg w0
+再把reg w0的value 存到 mem address FP+24</p>
+<p><img src="https://i.imgur.com/hzoX08v.png" alt=""></p>
+<p>最後因為要進到func (callee)
+把要給callee的變數存到cpu register裡面
+w1 跟 w0</p>
+<h3 id="4-branch-to-callee">4. branch to callee</h3>
+<pre><code>  400568:	97ffffed 	bl	40051c &lt;func&gt;
+  40056c:	2a0003e1 	mov	w1, w0
+</code></pre><p>bl,  branch with link
+他會把下一行instruction的address (2a0003e1) 存到X30 (LR)</p>
+<h3 id="5-func-callee-start">5. func (callee start)</h3>
+<pre><code>  40051c:	d10083ff 	sub	sp, sp, #0x20
+</code></pre><p><img src="https://i.imgur.com/eQQCQPd.png" alt=""></p>
+<h3 id="6-func-execute">6. func execute</h3>
+<pre><code>  400520:	b9000fe0 	str	w0, [sp, #12]
+  400524:	b9000be1 	str	w1, [sp, #8]
+  400528:	b9001fff 	str	wzr, [sp, #28]
+  40052c:	b9400fe1 	ldr	w1, [sp, #12]
+  400530:	b9400be0 	ldr	w0, [sp, #8]
+  400534:	0b000020 	add	w0, w1, w0
+  400538:	b9001fe0 	str	w0, [sp, #28]
+  40053c:	b9401fe0 	ldr	w0, [sp, #28]
+</code></pre><p>把reg w0 value(int 2) 存進sp+12的mem address 
+把reg w1 value(int 3) 存進sp+8的mem address 
+把mem address sp+28 存0 (str	wzr, [sp, #28])</p>
+<p>再度把w0, w1 從memory 讀入 (int a, b)
+最後相加存到reg w0 和mem address sp+28
+再把mem address sp+28 的value 存進w0</p>
+<pre><code>why?
+int c = 0;
+c = a+b;
+這會讓ISA多做C的初始化(wzr)
+</code></pre><h3 id="7-func-return">7. func return</h3>
+<pre><code>  400540:	910083ff 	add	sp, sp, #0x20
+  400544:	d65f03c0 	ret
+</code></pre><p>把SP 位置+20, 移回main的FP
+ret 把PC(當前執行的) 設成 reg LR(  40056c:	2a0003e1 	mov	w1, w0  &ldquo;main bl進func後的下一個位置&rdquo;)</p>
+<h3 id="8-main-continue">8. main continue</h3>
+<pre><code>  40056c:	2a0003e1 	mov	w1, w0
+  400570:	b0000080 	adrp	x0, 411000 &lt;__libc_start_main@GLIBC_2.17&gt;
+  400574:	9100a000 	add	x0, x0, #0x28
+  400578:	b9000001 	str	w1, [x0]
+  40057c:	52800000 	mov	w0, #0x0                   	// #0
+
+</code></pre><p>reg w0(剛剛func 算完的c) 存到reg w1</p>
+<p>reg x0 存了 &ldquo;411000&rdquo; (global variable 的區域)</p>
+<p>reg x0 = x0 + 28, 所以reg x0 目前value = 411028 (var的位置)</p>
+<p>reg w1 存進 x0所指的memory(411028, global int var)</p>
+<p>再把w0 清為0</p>
+<h3 id="9-main-end">9. main end</h3>
+<pre><code>  400580:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  400584:	d65f03c0 	ret
+</code></pre><p>把SP memory address pair load 進reg X29, X30
+SP 再設為 SP+32</p>
+<p><img src="https://i.imgur.com/DZgw4MA.png" alt=""></p>
+</article>
+    </section>
+
+    <footer class="ui attached segment dream-tags" data-html2canvas-ignore>
+      
+        
+          <a class="ui label" href="/tags/arm" title="ARM">ARM</a>
+        
+          <a class="ui label" href="/tags/aarch64" title="aarch64">aarch64</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i>Save as image
+      </div>
+    </footer>
+
+    
+
+    
+    
+    
+      <div class="ui segment utterances-comments" data-html2canvas-ignore>
+        <script src="https://utteranc.es/client.js"
+          repo="junsherlock/junsherlock.github.io"
+          issue-term="og:title"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </div>
+    
+
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+    <article class="dream-header">
+  <section class="ui top attached center aligned segment">
+    <div class="ui small circular image">
+      
+        <img src="/images/me.jpg">
+      
+    </div>
+
+    
+    <div class="ui medium header">Aeric&#39;s blog<div class="sub header" style="margin-top: 0.5rem;">Some sort of</div>
+    </div>
+    
+
+    <div class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="Archives"></i>
+      </a>
+      
+      <a class="item" href="/tags">
+        <i class="tags icon" title="All Tags"></i>
+      </a>
+      <a class="item" href="/categories">
+        <i class="th list icon" title="All Categories"></i>
+      </a>
+    </div>
+  </section>
+
+  
+  <section class="ui attached center aligned segment dream-tags">
+    
+      <a class="ui label" href="/tags/aarch64" title="aarch64">aarch64</a>
+    
+      <a class="ui label" href="/tags/arm" title="arm">arm</a>
+    
+      <a class="ui label" href="/tags/machine-learning" title="machine-learning">machine-learning</a>
+    
+  </section>
+  
+
+  
+  <section class="ui attached segment dream-categories">
+    <div class="ui accordion">
+      
+      
+      
+      
+      
+
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/arm-isa" class="item">arm-isa</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/notes" class="item">notes</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/note-for-amazon-sagemaker-enablement-workshop/" class="item">Note for Amazon SageMaker Enablement Workshop</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+
+      
+    </div>
+  </section>
+  
+
+  <section class="ui attached segment header-socials">
+    <nav class="ui secondary menu dream-menu dream-socials">
+  
+  
+    <div class="item">
+      <a href="mailto:junsherlock@gmail.com">
+        <i class=" mail icon" title="Email"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class="item">
+      <a href="https://www.linkedin.com/in/%e4%bf%8a%e5%bb%b7-%e6%9e%97-621430121" target="_blank">
+        <i class=" linkedin icon" title="Linkedin"></i>
+      </a>
+    </div>
+  
+
+  
+    <div class="item">
+      <a href="https://github.com/junsherlock" target="_blank">
+        <i class=" github icon" title="GitHub"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+</nav>
+
+  </section>
+
+  <section class="ui bottom attached center aligned segment">
+    
+      <p>© 2020 Aeric&#39;s blog</p>
+    
+
+    <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+    
+  </section>
+</article>
+
+  </div>
+</div>
+
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <div class="ui centered relaxed grid dream-grid dream-back">
+  
+  
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">About Me</h3>
+        </div>
+        <div class="ui bottom attached segment markdown-body">
+          <p>Hi, my name is Aeric</p>
+<p>This is my blog.</p>
+
+        </div>
+      </article>
+    </section>
+  
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article>
+      <div class="ui top attached segment">
+        <h3 class="ui header">Social Links</h3>
+      </div>
+      <div class="ui bottom attached segment">
+        <nav class="ui secondary menu dream-menu dream-socials">
+  
+  
+    <div class="item">
+      <a href="mailto:junsherlock@gmail.com">
+        <i class="large mail icon" title="Email"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class="item">
+      <a href="https://www.linkedin.com/in/%e4%bf%8a%e5%bb%b7-%e6%9e%97-621430121" target="_blank">
+        <i class="large linkedin icon" title="Linkedin"></i>
+      </a>
+    </div>
+  
+
+  
+    <div class="item">
+      <a href="https://github.com/junsherlock" target="_blank">
+        <i class="large github icon" title="GitHub"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+</nav>
+
+      </div>
+    </article>
+  </section>
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+  </section>
+
+  
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+  window.darkNav =  true 
+  window.hasTwitterEmbed =  null 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/semantic.min.js"></script>
+<script src="/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+<script src="/js/html2canvas.min.js"></script>
+<script src="/js/post.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+  
+    
+      <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+     
+  
+
+  <script>
+  hljs.initHighlightingOnLoad()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    var lightTheme = "gruvbox-light"
+    var darkTheme = "gruvbox-dark"
+    var theme = isDark ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark ? '#333' : '')
+  }
+</script>
+
+
+
+
+
+    
+      <div class="ui inverted segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="Search" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/junsherlock.github.io\//index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: true,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+  </body>
+</html>
