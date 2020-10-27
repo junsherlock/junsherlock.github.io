@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ARM ISA on Aeric&#39;s blog</title>
+    <link>https://junsherlock.github.io/categories/arm-isa/</link>
+    <description>Recent content in ARM ISA on Aeric&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 26 Oct 2020 18:23:56 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/categories/arm-isa/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ARM Aarch64 Stack Operation Example</title>
+      <link>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</link>
+      <pubDate>Mon, 26 Oct 2020 18:23:56 +0800</pubDate>
+      
+      <guid>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</guid>
+      <description>ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used</description>
+    </item>
+    
+  </channel>
+</rss>
