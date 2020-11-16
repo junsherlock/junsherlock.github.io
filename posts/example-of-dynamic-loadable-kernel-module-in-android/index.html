@@ -27,8 +27,8 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://junsherlock.github.io/posts/example-of-dynamic-loadable-kernel-module-in-android/" />
 <meta property="og:image" content="https://junsherlock.github.io/"/>
-<meta property="article:published_time" content="2020-10-27T16:47:17+08:00" />
-<meta property="article:modified_time" content="2020-10-27T16:47:17+08:00" />
+<meta property="article:published_time" content="2020-11-16T10:37:58+08:00" />
+<meta property="article:modified_time" content="2020-11-16T10:37:58+08:00" />
 
 
 
@@ -70,7 +70,7 @@
     
 
     
-    background-image: url(https://raw.githubusercontent.com/junsherlock/junsherlock.github.io/master/img/pexels-stein-egil-liland-3573603.jpg);
+    background-image: url(https://github.com/junsherlock/junsherlock.github.io/blob/master/img/pexels-stein-egil-liland-3573603.jpg?raw=true);
     
   }
   
@@ -134,14 +134,14 @@
             
 
             | 
-                Tuesday, Oct 27, 2020
+                Monday, Nov 16, 2020
               
 
             | 2 minute read
 
             | Update at
               
-                Tuesday, Oct 27, 2020
+                Monday, Nov 16, 2020
               
           </div>
         </h1>
@@ -225,7 +225,7 @@ include $(DLKM_DIR)/AndroidKernelModule.mk
 </code></pre><ol start="3">
 <li>Create Kbuild</li>
 </ol>
-<pre><code>obj-m += hello.o
+<pre><code>obj-m += htc_hello.o
 </code></pre><ol start="4">
 <li>build</li>
 </ol>
@@ -245,9 +245,11 @@ adb shell &quot;insmod /data/hello.ko&quot;
     <footer class="ui attached segment dream-tags" data-html2canvas-ignore>
       
         
-          <a class="ui label" href="/tags/android" title="Android">Android</a>
+          <a class="ui label" href="/tags/kernel-module" title="kernel module">kernel module</a>
         
-          <a class="ui label" href="/tags/kernel-module" title="Kernel Module">Kernel Module</a>
+          <a class="ui label" href="/tags/qualcomm" title="Qualcomm">Qualcomm</a>
+        
+          <a class="ui label" href="/tags/android" title="Android">Android</a>
         
       
       <div
@@ -309,15 +311,15 @@ adb shell &quot;insmod /data/hello.ko&quot;
   
   <section class="ui attached center aligned segment dream-tags">
     
-      <a class="ui label" href="/tags/aarch64" title="aarch64">aarch64</a>
-    
       <a class="ui label" href="/tags/android" title="android">android</a>
-    
-      <a class="ui label" href="/tags/arm" title="arm">arm</a>
     
       <a class="ui label" href="/tags/kernel-module" title="kernel-module">kernel-module</a>
     
       <a class="ui label" href="/tags/machine-learning" title="machine-learning">machine-learning</a>
+    
+      <a class="ui label" href="/tags/qualcomm" title="qualcomm">qualcomm</a>
+    
+      <a class="ui label" href="/tags/stack-operation" title="stack-operation">stack-operation</a>
     
   </section>
   
@@ -337,7 +339,27 @@ adb shell &quot;insmod /data/hello.ko&quot;
         
           <div class="title">
             <i class="dropdown icon"></i>
-            <a href="/categories/notes" class="item">notes</a>
+            <a href="/categories/arm64" class="item">arm64</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/kernel" class="item">kernel</a>
           </div>
           <div class="content">
             <div class="ui list">
@@ -348,15 +370,43 @@ adb shell &quot;insmod /data/hello.ko&quot;
                 </div>
               </div>
             
-              <div class="item">
-                <div class="content">
-                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
-                </div>
-              </div>
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/notes" class="item">notes</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
             
               <div class="item">
                 <div class="content">
                   <a href="/posts/note-for-amazon-sagemaker-enablement-workshop/" class="item">Note for Amazon SageMaker Enablement Workshop</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/trace32" class="item">trace32</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/trace32-basic-operation-based-on-qualcomm-platform/" class="item">Trace32 Basic Operation Based on Qualcomm Platform</a>
                 </div>
               </div>
             

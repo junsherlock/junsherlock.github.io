@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Trace32 Basic Operation Based on Qualcomm Platform | Aeric&#39;s blog</title>
+
+    
+<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aeric" />
+<meta name="description" content="Trace32 basic operation based on Qualcomm platform  Useful Command do coreX_reg.cmm // load cmm filesd.dump $ADDRESS // View memory address of $ADDRESSd.l $ADDRESS // Show the assembly code of $ADDRESSv.f // View Stack Framer.View // Register viewy.SourcePATH.SetRecurseDir // Set source code pathRefer https://www2.lauterbach.com/pdf/commandlist.pdf for more detail
+ Analysis Step  Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32. Find matched vmlinux and using ramdump parser." />
+
+
+
+<meta name="generator" content="Hugo 0.76.5" />
+
+<link rel="canonical" href="https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/" />
+
+
+<meta property="og:title" content="Trace32 Basic Operation Based on Qualcomm Platform" />
+<meta property="og:description" content="Trace32 basic operation based on Qualcomm platform  Useful Command do coreX_reg.cmm // load cmm filesd.dump $ADDRESS // View memory address of $ADDRESSd.l $ADDRESS // Show the assembly code of $ADDRESSv.f // View Stack Framer.View // Register viewy.SourcePATH.SetRecurseDir // Set source code pathRefer https://www2.lauterbach.com/pdf/commandlist.pdf for more detail
+ Analysis Step  Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32. Find matched vmlinux and using ramdump parser." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/" />
+<meta property="og:image" content="https://junsherlock.github.io/"/>
+<meta property="article:published_time" content="2020-11-16T10:57:31+08:00" />
+<meta property="article:modified_time" content="2020-11-16T10:57:31+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://junsherlock.github.io/"/>
+
+<meta name="twitter:title" content="Trace32 Basic Operation Based on Qualcomm Platform"/>
+<meta name="twitter:description" content="Trace32 basic operation based on Qualcomm platform  Useful Command do coreX_reg.cmm // load cmm filesd.dump $ADDRESS // View memory address of $ADDRESSd.l $ADDRESS // Show the assembly code of $ADDRESSv.f // View Stack Framer.View // Register viewy.SourcePATH.SetRecurseDir // Set source code pathRefer https://www2.lauterbach.com/pdf/commandlist.pdf for more detail
+ Analysis Step  Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32. Find matched vmlinux and using ramdump parser."/>
+
+
+<link rel="stylesheet" href="/css/semantic.min.css" />
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="/css/OverlayScrollbars.min.css" />
+<link rel="stylesheet" href="/css/github-markdown.css" />
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  a:hover {
+    text-decoration: underline; 
+  }
+
+  
+  a {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a,
+  .inverted a:hover {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body {
+    
+    background-color: black;
+    
+
+    
+    background-image: url(https://github.com/junsherlock/junsherlock.github.io/blob/master/img/pexels-stein-egil-liland-3573603.jpg?raw=true);
+    
+  }
+  
+</style>
+
+    
+
+
+  
+    <link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/gruvbox-light.min.css" />
+  
+
+
+
+
+
+  </head>
+
+  <body>
+    
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="Flip it!"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="Home" onclick="window.location.href = 'https:\/\/junsherlock.github.io\/'"></i>
+  </div>
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    
+    <section class="ui top attached segment cover">
+      <div class="cover-img" style="background-image: url(https://i.imgur.com/wx3nyAj.png);"></div>
+    </section>
+    
+    <section class="ui attached segment">
+      <header>
+        <h1 class="ui large header">
+          Trace32 Basic Operation Based on Qualcomm Platform
+          <div class="sub header">
+            @
+            
+              
+                Aeric
+              
+            
+
+            | 
+                Monday, Nov 16, 2020
+              
+
+            | 5 minute read
+
+            | Update at
+              
+                Monday, Nov 16, 2020
+              
+          </div>
+        </h1>
+      </header>
+
+      <article class="main"><h1 id="trace32-basic-operation-based-on-qualcomm-platform">Trace32 basic operation based on Qualcomm platform</h1>
+<hr>
+<h2 id="useful-command">Useful Command</h2>
+<pre><code>do coreX_reg.cmm                  // load cmm files
+d.dump $ADDRESS                   // View memory address of $ADDRESS
+d.l $ADDRESS                      // Show the assembly code of $ADDRESS
+v.f                               // View Stack Frame
+r.View                            // Register view
+y.SourcePATH.SetRecurseDir        // Set source code path
+</code></pre><p>Refer 
+<a href="https://www2.lauterbach.com/pdf/commandlist.pdf">https://www2.lauterbach.com/pdf/commandlist.pdf</a>
+for more detail</p>
+<hr>
+<h2 id="analysis-step">Analysis Step</h2>
+<ol>
+<li>Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32.</li>
+<li>Find matched vmlinux and using ramdump parser.</li>
+<li>launch T32, find out which process killing system.</li>
+</ol>
+<hr>
+<h2 id="analysis">Analysis</h2>
+<h3 id="from-ramdump_msgtxt">From RAMDUMP_MSG.txt</h3>
+<pre><code>reset reason: 0x776655aa 
+reset message: Unknown
+</code></pre><p>There is unknow reason, so device might be shut down by security element.
+(that is, there is someone higher level than &ldquo;kernel&rdquo;, and can control device without kernel)</p>
+<p><img src="https://i.imgur.com/RHoI2Kj.png" alt=""></p>
+<hr>
+<h3 id="from-tzlogbin">From TZLOG.BIN</h3>
+<pre><code>HYP Virt: Illegal virtualization request for reg addr=0x62b40004 
+Core:6, Data abort from EL1, Translation fault 3rd level 
+ Read operation 
+ Faulting Address: 0x62b40004 
+ Address of Last Instruction Executed: 0xffffff8026346810 at EL1 
+ System Registers: 
+  ESR_EL2(93930007) 
+  FAR_EL2(ffffff800ffa0004) 
+  HPFAR_EL2(62b400) 
+  ELR_EL2(ffffff8026346810) 
+  HCR_EL2(80080007)
+</code></pre><hr>
+<h3 id="from-dmesg_tztxt-we-focus-on-core6">From dmesg_tz.txt (we focus on core6)</h3>
+<pre><code>(--------------------------------------------------------------------------------)
+Parsing CPU6 context start 172f37000 end 172f37800
+Core 6 PC: UNKNOWN+0 &lt;1c02a590&gt;
+Core 6 LR: UNKNOWN+0 &lt;857173bc&gt;
+
+[&lt;1c02a590&gt;] UNKNOWN+0x0
+[&lt;ffffff8026346a80&gt;] UNKNOWN+0x0
+[&lt;ffffff802c0e1e4c&gt;] gpiolib_seq_show+0xd0
+[&lt;ffffff802be8479c&gt;] seq_read+0x370
+[&lt;ffffff802bf958b8&gt;] full_proxy_read+0x60
+[&lt;ffffff802be58e0c&gt;] vfs_read+0xa0
+[&lt;ffffff802be5a508&gt;] SyS_read+0x60
+[&lt;ffffff802bc83f80&gt;] el0_svc_naked+0x34
+
+core6 regs:
+   x0       = 0x0000000000000001
+   x1       = 0x020bcf577e7c5920
+   x2       = 0x000000000682aaab
+   x3       = 0x0000000000000004
+   x4       = 0x000000000115e2b6
+   x5       = 0x0000000000000015
+   x6       = 0x0000000006118a82
+   x7       = 0xffffffc72d95fce0
+   x8       = 0xffffffc79a668080
+   x9       = 0x0000000000000003
+   x10      = 0x203a203834316f69
+   x11      = 0x6d32203020206e69
+   x12      = 0x64206c6c75702041
+   x13      = 0x697067200a6e776f
+   x14      = 0x69203a203934316f
+   x15      = 0xaaaaaaaaaaaaaaab
+   x16      = 0xffffff802be5a4a8
+   x17      = 0x0000006fd84fef7c
+   x18      = 0x0000000000000001
+   x19      = 0xffffff800ffa0004
+   x20      = 0x0000000000000004
+   x21      = 0x0000000000000000
+   x22      = 0xffffff8026348180
+   x23      = 0x0000000000000000
+   x24      = 0xffffffc7e6aca0a8
+   x25      = 0xffffff8026349580
+   x26      = 0xffffff80263487c8
+   x27      = 0xffffffc7e9369ea0
+   x28      = 0xffffffc7e9369e98
+   x29      = 0xffffffc72d95fc30
+   x30      = 0x00000000857173bc
+   pc       = 0x000000001c02a590
+   currentEL = 0x0000000000000000
+   sp_el3   = 0x0000000000000000
+   elr_el3  = 0x00000000857115ec
+   spsr_el3 = 0x00000000800003c9
+   sp_el2   = 0x000000008589abd0
+   elr_el2  = 0xffffff8026346810
+   spsr_el2 = 0x0000000060400145
+   sp_el1   = 0xffffffc72d95fc30
+   elr_el1  = 0x0000006fd84fef84
+   spsr_el1 = 0x0000000060000000
+   sp_el0   = 0xffffffc745c6c680
+   cpumerrsr_el1 = 0x0000000093930007
+   l2merrsr_el1 = 0xffffff800ffa0004
+
+=============== secure contex ===========
+   x0       = 0x0000000080080007
+   x1       = 0x0000000000000000
+   x2       = 0x0000000000000000
+   x3       = 0x0000000000000000
+   x4       = 0x0000000000000000
+   x5       = 0x0000000000000000
+   x6       = 0x0000000000000000
+   x7       = 0x0000000000000180
+   x8       = 0x0000000000000000
+   x9       = 0x000000001c132b5c
+   x10      = 0x0000000000000001
+   x11      = 0x00000000733ce000
+   x12      = 0x0000000000000180
+   x13      = 0x0000000000000001
+   x14      = 0x0000000000000000
+   x15      = 0x0000000000000000
+   x16      = 0x0000000000700124
+   x17      = 0x000000001c132cb7
+   x18      = 0x000000001c13aef8
+   x19      = 0x000000001c0d0189
+   x20      = 0x0000000000000000
+   x21      = 0x0000000000000020
+   x22      = 0x0000000000000000
+   x23      = 0x0000000000000033
+   x24      = 0x0000000000700012
+   x25      = 0x000000001c19e428
+   x26      = 0x0000000000000000
+   x27      = 0x0000000000000000
+   x28      = 0x0000000000000000
+   x29      = 0x0000000000000000
+   x30      = 0x0000000000000000
+   pc       = 0x0000000000000000
+   currentEL = 0x0000000000000000
+   sp_el3   = 0x000000001c132e60
+   elr_el3  = 0x000000001c02a590
+   spsr_el3 = 0x000000001c02a590
+   sp_el2   = 0x0000000000000000
+   elr_el2  = 0x0000000000000000
+   spsr_el2 = 0x00000000857115ec
+   sp_el1   = 0x00000000800003c9
+   elr_el1  = 0x000000008589abd0
+   spsr_el1 = 0xffffff8026346810
+   sp_el0   = 0x0000000060400145
+   cpumerrsr_el1 = 0x000000001c132e50
+   l2merrsr_el1 = 0x000000001c02a590
+============ end secure context ===========
+(--------------------------------------------------------------------------------)
+CPU6 2 process is running
+ |--curr: cat(2841)
+ |--idle: swapper/6(0)
+ |--stop: migration/6(64)
+CFS 1 process is pending
+ |--curr: 1 process is grouping
+ |   |--curr: cat(2841)
+ |   |--next: None(0)
+ |   |--last: None(0)
+ |   |--skip: None(0)
+ |--next: None(0)
+ |--last: None(0)
+ |--skip: None(0)
+RT 1 process is pending
+ |--pend: DispSync(932)
+current callstack is maybe:
+0xffffffc72d95f358:('debug_smp_processor_id', 28L)
+0xffffffc72d95f368:('debug_smp_processor_id', 28L)
+0xffffffc72d95f3a8:('unwind_frame', 444L)
+0xffffffc72d95f3b8:('walk_stackframe', 44L)
+0xffffffc72d95f3d8:('debug_smp_processor_id', 28L)
+0xffffffc72d95f3e8:('debug_smp_processor_id', 28L)
+0xffffffc72d95f418:('unwind_frame', 444L)
+0xffffffc72d95f428:('unwind_frame', 444L)
+0xffffffc72d95f438:('walk_stackframe', 44L)
+0xffffffc72d95f450:('save_return_addr', 0L)
+0xffffffc72d95f478:('return_address', 96L)
+0xffffffc72d95f488:('_raw_spin_unlock_irqrestore', 96L)
+0xffffffc72d95f4a8:('preempt_count_sub', 536L)
+0xffffffc72d95f4b8:('sched_clock', 56L)
+0xffffffc72d95f4c8:('preempt_count_sub', 464L)
+0xffffffc72d95f4d8:('_raw_spin_unlock_irqrestore', 96L)
+0xffffffc72d95f4e0:('depot_save_stack', 928L)
+0xffffffc72d95f508:('_raw_spin_unlock_irqrestore', 96L)
+0xffffffc72d95f568:('depot_save_stack', 928L)
+0xffffffc72d95f588:('save_stack', 196L)
+0xffffffc72d95f590:('__set_page_owner', 68L)
+0xffffffc72d95f608:('__set_page_owner', 68L)
+0xffffffc72d95f648:('get_page_from_freelist', 2344L)
+0xffffffc72d95f650:('__alloc_pages_nodemask', 364L)
+0xffffffc72d95f658:('handle_pte_fault', 2664L)
+0xffffffc72d95f660:('__handle_mm_fault', 188L)
+0xffffffc72d95f668:('handle_mm_fault', 148L)
+0xffffffc72d95f670:('do_page_fault', 952L)
+0xffffffc72d95f678:('do_translation_fault', 104L)
+0xffffffc72d95f680:('do_mem_abort', 100L)
+0xffffffc72d95f688:('el1_ia', 36L)
+0xffffffc72d95f690:('full_proxy_read', 96L)
+0xffffffc72d95f698:('vfs_read', 160L)
+0xffffffc72d95f6a0:('SyS_read', 96L)
+0xffffffc72d95f6a8:('el0_svc_naked', 52L)
+0xffffffc72d95f6b8:('__set_page_owner', 44L)
+0xffffffc72d95f6d8:('get_page_from_freelist', 2344L)
+0xffffffc72d95f708:('__alloc_pages_nodemask', 364L)
+0xffffffc72d95f768:('preempt_count_sub', 536L)
+0xffffffc72d95f778:('sync_entity_load_avg', 120L)
+0xffffffc72d95f788:('debug_smp_processor_id', 28L)
+0xffffffc72d95f7b8:('sync_entity_load_avg', 120L)
+0xffffffc72d95f7c8:('debug_smp_processor_id', 28L)
+0xffffffc72d95f7f8:('select_energy_cpu_brute', 2272L)
+0xffffffc72d95f808:('select_energy_cpu_brute', 5688L)
+0xffffffc72d95f818:('walk_stackframe', 44L)
+0xffffffc72d95f838:('select_task_rq_fair', 1240L)
+0xffffffc72d95f8d8:('sched_clock', 56L)
+0xffffffc72d95f8e8:('trace_clock_local', 32L)
+0xffffffc72d95f918:('rb_reserve_next_event', 148L)
+0xffffffc72d95f948:('stm_channel_alloc', 116L)
+0xffffffc72d95f958:('sched_clock', 56L)
+0xffffffc72d95f968:('stm_trace_data_header', 156L)
+0xffffffc72d95f978:('sched_clock', 56L)
+0xffffffc72d95f988:('trace_clock_local', 32L)
+0xffffffc72d95f998:('sched_clock', 56L)
+0xffffffc72d95f9a8:('trace_clock_local', 32L)
+0xffffffc72d95f9d8:('rb_reserve_next_event', 148L)
+0xffffffc72d95f9e8:('stm_channel_alloc', 116L)
+0xffffffc72d95f9f8:('sched_clock', 56L)
+0xffffffc72d95fa08:('stm_channel_alloc', 116L)
+0xffffffc72d95fa18:('sched_clock', 56L)
+0xffffffc72d95fa28:('stm_trace_data_header', 156L)
+0xffffffc72d95fa38:('debug_smp_processor_id', 28L)
+0xffffffc72d95fa78:('unwind_frame', 444L)
+0xffffffc72d95fa88:('walk_stackframe', 44L)
+0xffffffc72d95faa0:('save_return_addr', 0L)
+0xffffffc72d95fab8:('debug_smp_processor_id', 28L)
+0xffffffc72d95fac8:('number', 800L)
+0xffffffc72d95fad8:('debug_smp_processor_id', 28L)
+0xffffffc72d95fae8:('vsnprintf', 892L)
+0xffffffc72d95fb48:('string', 108L)
+0xffffffc72d95fb58:('vsnprintf', 148L)
+0xffffffc72d95fb88:('seq_printf', 208L)
+0xffffffc72d95fbb8:('sched_clock', 56L)
+0xffffffc72d95fbc8:('uncached_logk', 192L)
+0xffffffc72d95fc68:('gpiolib_seq_show', 208L)
+0xffffffc72d95fce8:('seq_read', 880L)
+0xffffffc72d95fd68:('full_proxy_read', 96L)
+0xffffffc72d95fdc8:('full_proxy_read', 48L)
+0xffffffc72d95fdf8:('vfs_read', 160L)
+0xffffffc72d95fe38:('SyS_read', 96L)
+0xffffffc72d95fe78:('el0_svc_naked', 52L)
+</code></pre><h3 id="core6-backtrace">Core6 backtrace</h3>
+<pre><code>[&lt;1c02a590&gt;] UNKNOWN+0x0
+[&lt;ffffff8026346a80&gt;] UNKNOWN+0x0
+[&lt;ffffff802c0e1e4c&gt;] gpiolib_seq_show+0xd0
+[&lt;ffffff802be8479c&gt;] seq_read+0x370
+[&lt;ffffff802bf958b8&gt;] full_proxy_read+0x60
+[&lt;ffffff802be58e0c&gt;] vfs_read+0xa0
+[&lt;ffffff802be5a508&gt;] SyS_read+0x60
+[&lt;ffffff802bc83f80&gt;] el0_svc_naked+0x34
+</code></pre><h3 id="start-trace32">Start Trace32</h3>
+<p>by launch_t32.bat</p>
+<pre><code>do core6_regs.cmm
+</code></pre><pre><code>v.f
+</code></pre><p><img src="https://i.imgur.com/wx3nyAj.png" alt=""></p>
+<p>we could see that there is nothing on core6&rsquo;s frame when it almost dead.</p>
+<hr>
+<p><img src="https://i.imgur.com/cBnpkBh.png" alt=""></p>
+<p>Core6 reg status:</p>
+<pre><code>   x29      = 0xffffffc72d95fc30
+   x30      = 0x00000000857173bc
+   pc       = 0x000000001c02a590
+   currentEL = 0x0000000000000000
+   sp_el3   = 0x0000000000000000
+   elr_el3  = 0x00000000857115ec
+   spsr_el3 = 0x00000000800003c9
+   sp_el2   = 0x000000008589abd0
+   elr_el2  = 0xffffff8026346810
+   spsr_el2 = 0x0000000060400145
+   sp_el1   = 0xffffffc72d95fc30
+   elr_el1  = 0x0000006fd84fef84
+   spsr_el1 = 0x0000000060000000
+   sp_el0   = 0xffffffc745c6c680
+   cpumerrsr_el1 = 0x0000000093930007
+   l2merrsr_el1 = 0xffffff800ffa0004
+   
+  =============== secure contex =========== 
+   x29      = 0x0000000000000000
+   x30      = 0x0000000000000000
+   pc       = 0x0000000000000000
+   currentEL = 0x0000000000000000
+   sp_el3   = 0x000000001c132e60
+   elr_el3  = 0x000000001c02a590
+   spsr_el3 = 0x000000001c02a590
+   sp_el2   = 0x0000000000000000
+   elr_el2  = 0x0000000000000000
+   spsr_el2 = 0x00000000857115ec
+   sp_el1   = 0x00000000800003c9
+   elr_el1  = 0x000000008589abd0
+   spsr_el1 = 0xffffff8026346810
+   sp_el0   = 0x0000000060400145
+   cpumerrsr_el1 = 0x000000001c132e50
+   l2merrsr_el1 = 0x000000001c02a590
+============ end secure context ===========
+</code></pre><p><img src="https://i.imgur.com/tsAdDsY.png" alt=""></p>
+<pre><code>r.s PC 0xffffff8026346810
+</code></pre><pre><code>v.f
+</code></pre><p><img src="https://i.imgur.com/WBsPoyY.png" alt=""></p>
+<p>audio-kernel/soc pinctrl-lpi.c is a dlkm(dynamic loadable kernel module)</p>
+<p><img src="https://i.imgur.com/y8stjix.png" alt="">
+<img src="https://i.imgur.com/i4iy1oU.png" alt="">
+<img src="https://i.imgur.com/6qOP3Q8.png" alt=""></p>
+<p>reference:
+<a href="https://www.jianshu.com/p/0920dce51c5c">https://www.jianshu.com/p/0920dce51c5c</a>
+<a href="https://www.jianshu.com/p/6573801b6213">https://www.jianshu.com/p/6573801b6213</a></p>
+</article>
+    </section>
+
+    <footer class="ui attached segment dream-tags" data-html2canvas-ignore>
+      
+        
+          <a class="ui label" href="/tags/qualcomm" title="Qualcomm">Qualcomm</a>
+        
+          <a class="ui label" href="/tags/android" title="Android">Android</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i>Save as image
+      </div>
+    </footer>
+
+    
+
+    
+    
+    
+      <div class="ui segment utterances-comments" data-html2canvas-ignore>
+        <script src="https://utteranc.es/client.js"
+          repo="junsherlock/junsherlock.github.io"
+          issue-term="og:title"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </div>
+    
+
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+    <article class="dream-header">
+  <section class="ui top attached center aligned segment">
+    <div class="ui small circular image">
+      
+        <img src="https://raw.githubusercontent.com/junsherlock/junsherlock.github.io/master/img/me.jpg">
+      
+    </div>
+
+    
+    <div class="ui medium header">Aeric&#39;s blog<div class="sub header" style="margin-top: 0.5rem;">Some sort of</div>
+    </div>
+    
+
+    <div class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="Archives"></i>
+      </a>
+      
+      <a class="item" href="/tags">
+        <i class="tags icon" title="All Tags"></i>
+      </a>
+      <a class="item" href="/categories">
+        <i class="th list icon" title="All Categories"></i>
+      </a>
+    </div>
+  </section>
+
+  
+  <section class="ui attached center aligned segment dream-tags">
+    
+      <a class="ui label" href="/tags/android" title="android">android</a>
+    
+      <a class="ui label" href="/tags/kernel-module" title="kernel-module">kernel-module</a>
+    
+      <a class="ui label" href="/tags/machine-learning" title="machine-learning">machine-learning</a>
+    
+      <a class="ui label" href="/tags/qualcomm" title="qualcomm">qualcomm</a>
+    
+      <a class="ui label" href="/tags/stack-operation" title="stack-operation">stack-operation</a>
+    
+  </section>
+  
+
+  
+  <section class="ui attached segment dream-categories">
+    <div class="ui accordion">
+      
+      
+      
+      
+      
+
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/arm64" class="item">arm64</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/kernel" class="item">kernel</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/example-of-dynamic-loadable-kernel-module-in-android/" class="item">Example of Dynamic Loadable Kernel Module in Android</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/notes" class="item">notes</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/note-for-amazon-sagemaker-enablement-workshop/" class="item">Note for Amazon SageMaker Enablement Workshop</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/trace32" class="item">trace32</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/trace32-basic-operation-based-on-qualcomm-platform/" class="item">Trace32 Basic Operation Based on Qualcomm Platform</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+
+      
+    </div>
+  </section>
+  
+
+  <section class="ui attached segment header-socials">
+    <nav class="ui secondary menu dream-menu dream-socials">
+  
+  
+    <div class="item">
+      <a href="mailto:junsherlock@gmail.com">
+        <i class=" mail icon" title="Email"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class="item">
+      <a href="https://www.linkedin.com/in/%e4%bf%8a%e5%bb%b7-%e6%9e%97-621430121" target="_blank">
+        <i class=" linkedin icon" title="Linkedin"></i>
+      </a>
+    </div>
+  
+
+  
+    <div class="item">
+      <a href="https://github.com/junsherlock" target="_blank">
+        <i class=" github icon" title="GitHub"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+</nav>
+
+  </section>
+
+  <section class="ui bottom attached center aligned segment">
+    
+      <p>© 2020 Aeric&#39;s blog</p>
+    
+
+    <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+    
+  </section>
+</article>
+
+  </div>
+</div>
+
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <div class="ui centered relaxed grid dream-grid dream-back">
+  
+  
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">About Me</h3>
+        </div>
+        <div class="ui bottom attached segment markdown-body">
+          <p>Hi, my name is Aeric</p>
+<p>This is my blog.</p>
+
+        </div>
+      </article>
+    </section>
+  
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article>
+      <div class="ui top attached segment">
+        <h3 class="ui header">Social Links</h3>
+      </div>
+      <div class="ui bottom attached segment">
+        <nav class="ui secondary menu dream-menu dream-socials">
+  
+  
+    <div class="item">
+      <a href="mailto:junsherlock@gmail.com">
+        <i class="large mail icon" title="Email"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class="item">
+      <a href="https://www.linkedin.com/in/%e4%bf%8a%e5%bb%b7-%e6%9e%97-621430121" target="_blank">
+        <i class="large linkedin icon" title="Linkedin"></i>
+      </a>
+    </div>
+  
+
+  
+    <div class="item">
+      <a href="https://github.com/junsherlock" target="_blank">
+        <i class="large github icon" title="GitHub"></i>
+      </a>
+    </div>
+  
+
+  
+
+  
+</nav>
+
+      </div>
+    </article>
+  </section>
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+  </section>
+
+  
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+  window.darkNav =  true 
+  window.hasTwitterEmbed =  null 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/semantic.min.js"></script>
+<script src="/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+<script src="/js/html2canvas.min.js"></script>
+<script src="/js/post.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+  
+    
+      <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+     
+  
+
+  <script>
+  hljs.initHighlightingOnLoad()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    var lightTheme = "gruvbox-light"
+    var darkTheme = "gruvbox-dark"
+    var theme = isDark ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark ? '#333' : '')
+  }
+</script>
+
+
+
+
+
+    
+      <div class="ui inverted segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="Search" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/junsherlock.github.io\//index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: true,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+  </body>
+</html>

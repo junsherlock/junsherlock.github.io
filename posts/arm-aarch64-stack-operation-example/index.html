@@ -70,7 +70,7 @@
     
 
     
-    background-image: url(https://raw.githubusercontent.com/junsherlock/junsherlock.github.io/master/img/pexels-stein-egil-liland-3573603.jpg);
+    background-image: url(https://github.com/junsherlock/junsherlock.github.io/blob/master/img/pexels-stein-egil-liland-3573603.jpg?raw=true);
     
   }
   
@@ -148,6 +148,7 @@
       </header>
 
       <article class="main"><h1 id="arm-aarch64-stack-operation-example">ARM aarch64 stack operation example</h1>
+<hr>
 <h2 id="前情提要">前情提要:</h2>
 <table>
 <thead>
@@ -210,6 +211,7 @@
 </tr>
 </tbody>
 </table>
+<hr>
 <p>幾個常用&hellip;</p>
 <pre><code>MOV    X1，X0         //將Reg X0 的value 存入 reg X1
 ADD    X0，X1，X2     //Reg X1 和 X2 的value 相加 後存到 X0
@@ -233,10 +235,12 @@ B   //B: Branchm 跳轉指令
 BL  //带返回的跳轉指令， 下一個Instruction(返回地址) 保存到LR（X30）
 BLR Xn // 带返回的跳转指令，跳转到指令到Reg Xn 中保存的地址
 RET   //callee 返回指令，下一個Instruction(返回地址)在LR（X30）
-</code></pre><p>其中 MOV 指令只能用於register 之間傳值
+</code></pre><hr>
+<p>其中 MOV 指令只能用於register 之間傳值
 LD 與 ST 系列(LDR/LDP/STR/STUR/STP)  用於Register 與 Memory 之間傳值</p>
 <p>Addressing:
 <a href="https://developer.arm.com/architectures/learn-the-architecture/aarch64-instruction-set-architecture/loads-and-stores-addressing">https://developer.arm.com/architectures/learn-the-architecture/aarch64-instruction-set-architecture/loads-and-stores-addressing</a></p>
+<hr>
 <h2 id="正文開始">正文開始:</h2>
 <p>以如下一段code 用arm cross compiler</p>
 <pre><code>//main.c
@@ -254,13 +258,15 @@ int main()
     var = func(i, j);
     return 0;
 }
-</code></pre><p>Compiler from:
+</code></pre><hr>
+<p>Compiler from:
 <a href="https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/">https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/</a></p>
 <p>compiler command:</p>
 <pre><code>gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc main.c -o main
 </code></pre><p>objdump:</p>
 <pre><code>gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-objdump -D main
-</code></pre><p>然後找出 main 跟 func 的assembly</p>
+</code></pre><hr>
+<p>然後找出 main 跟 func 的assembly</p>
 <pre><code>000000000040051c &lt;func&gt;:
   40051c:	d10083ff 	sub	sp, sp, #0x20
   400520:	b9000fe0 	str	w0, [sp, #12]
@@ -298,9 +304,12 @@ int main()
   0000000000411028 &lt;var&gt;:
   411028:	0000000a 	.word	0x0000000a
 
-</code></pre><p>arm64 的 LR(x30) 與 FP(x29) 在stack frame的頂部</p>
+</code></pre><hr>
 <p><img src="https://i.imgur.com/l6f94Rj.png" alt=""></p>
+<hr>
+<p>arm64 的 LR(x30) 與 FP(x29) 在stack frame的頂部</p>
 <p><img src="https://i.imgur.com/4DdXdVD.png" alt=""></p>
+<hr>
 <h3 id="1-stpx29-x30-sp--32">1. stp	x29, x30, [sp, #-32]!</h3>
 <pre><code>//把 sp-32 存到X29 X30
 stp	x29, x30, [sp, #-32]!
@@ -309,7 +318,9 @@ stp	x29, x30, [sp, #-32]!
 <p>並且SP register value = SP-32</p>
 <p>所以這步基本上把main 的FP LR 位置定位
 並且把CPU register的SP 更新</p>
+<hr>
 <p><img src="https://i.imgur.com/PlWDYax.png" alt=""></p>
+<hr>
 <pre><code>why &quot;-32&quot;?
 
 FP 8 bytes
@@ -343,10 +354,13 @@ ex assembly:
   400598:	a8c37bfd 	ldp	x29, x30, [sp], #48
   40059c:	d65f03c0 	ret
 
-</code></pre><h3 id="2-movx29-sp">2. mov	x29, sp</h3>
+</code></pre><hr>
+<h3 id="2-movx29-sp">2. mov	x29, sp</h3>
 <pre><code>40054c:	910003fd 	mov	x29, sp
 </code></pre><p>這一步就是把最早的 SP-32 更新到 CPU Register X29 (Frame Point)</p>
+<hr>
 <p><img src="https://i.imgur.com/SZCbxlv.png" alt=""></p>
+<hr>
 <h3 id="3-update-variable">3. update variable</h3>
 <pre><code>  400550:	52800040 	mov	w0, #0x2                   	// #2
   400554:	b9001fa0 	str	w0, [x29, #28]
@@ -360,18 +374,22 @@ ex assembly:
 <p>同理
 把3存到reg w0
 再把reg w0的value 存到 mem address FP+24</p>
+<hr>
 <p><img src="https://i.imgur.com/hzoX08v.png" alt=""></p>
 <p>最後因為要進到func (callee)
 把要給callee的變數存到cpu register裡面
 w1 跟 w0</p>
+<hr>
 <h3 id="4-branch-to-callee">4. branch to callee</h3>
 <pre><code>  400568:	97ffffed 	bl	40051c &lt;func&gt;
   40056c:	2a0003e1 	mov	w1, w0
 </code></pre><p>bl,  branch with link
 他會把下一行instruction的address (2a0003e1) 存到X30 (LR)</p>
+<hr>
 <h3 id="5-func-callee-start">5. func (callee start)</h3>
 <pre><code>  40051c:	d10083ff 	sub	sp, sp, #0x20
-</code></pre><p><img src="https://i.imgur.com/eQQCQPd.png" alt=""></p>
+</code></pre><p><img src="https://i.imgur.com/ZDzh9YD.png" alt=""></p>
+<hr>
 <h3 id="6-func-execute">6. func execute</h3>
 <pre><code>  400520:	b9000fe0 	str	w0, [sp, #12]
   400524:	b9000be1 	str	w1, [sp, #8]
@@ -387,15 +405,18 @@ w1 跟 w0</p>
 <p>再度把w0, w1 從memory 讀入 (int a, b)
 最後相加存到reg w0 和mem address sp+28
 再把mem address sp+28 的value 存進w0</p>
+<hr>
 <pre><code>why?
 int c = 0;
 c = a+b;
 這會讓ISA多做C的初始化(wzr)
-</code></pre><h3 id="7-func-return">7. func return</h3>
+</code></pre><hr>
+<h3 id="7-func-return">7. func return</h3>
 <pre><code>  400540:	910083ff 	add	sp, sp, #0x20
   400544:	d65f03c0 	ret
 </code></pre><p>把SP 位置+20, 移回main的FP
 ret 把PC(當前執行的) 設成 reg LR(  40056c:	2a0003e1 	mov	w1, w0  &ldquo;main bl進func後的下一個位置&rdquo;)</p>
+<hr>
 <h3 id="8-main-continue">8. main continue</h3>
 <pre><code>  40056c:	2a0003e1 	mov	w1, w0
   400570:	b0000080 	adrp	x0, 411000 &lt;__libc_start_main@GLIBC_2.17&gt;
@@ -408,6 +429,7 @@ ret 把PC(當前執行的) 設成 reg LR(  40056c:	2a0003e1 	mov	w1, w0  &ldquo;
 <p>reg x0 = x0 + 28, 所以reg x0 目前value = 411028 (var的位置)</p>
 <p>reg w1 存進 x0所指的memory(411028, global int var)</p>
 <p>再把w0 清為0</p>
+<hr>
 <h3 id="9-main-end">9. main end</h3>
 <pre><code>  400580:	a8c27bfd 	ldp	x29, x30, [sp], #32
   400584:	d65f03c0 	ret
@@ -420,9 +442,7 @@ SP 再設為 SP+32</p>
     <footer class="ui attached segment dream-tags" data-html2canvas-ignore>
       
         
-          <a class="ui label" href="/tags/arm" title="ARM">ARM</a>
-        
-          <a class="ui label" href="/tags/aarch64" title="aarch64">aarch64</a>
+          <a class="ui label" href="/tags/stack-operation" title="stack operation">stack operation</a>
         
       
       <div
@@ -484,15 +504,15 @@ SP 再設為 SP+32</p>
   
   <section class="ui attached center aligned segment dream-tags">
     
-      <a class="ui label" href="/tags/aarch64" title="aarch64">aarch64</a>
-    
       <a class="ui label" href="/tags/android" title="android">android</a>
-    
-      <a class="ui label" href="/tags/arm" title="arm">arm</a>
     
       <a class="ui label" href="/tags/kernel-module" title="kernel-module">kernel-module</a>
     
       <a class="ui label" href="/tags/machine-learning" title="machine-learning">machine-learning</a>
+    
+      <a class="ui label" href="/tags/qualcomm" title="qualcomm">qualcomm</a>
+    
+      <a class="ui label" href="/tags/stack-operation" title="stack-operation">stack-operation</a>
     
   </section>
   
@@ -512,7 +532,27 @@ SP 再設為 SP+32</p>
         
           <div class="title">
             <i class="dropdown icon"></i>
-            <a href="/categories/notes" class="item">notes</a>
+            <a href="/categories/arm64" class="item">arm64</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/kernel" class="item">kernel</a>
           </div>
           <div class="content">
             <div class="ui list">
@@ -523,15 +563,43 @@ SP 再設為 SP+32</p>
                 </div>
               </div>
             
-              <div class="item">
-                <div class="content">
-                  <a href="/posts/arm-aarch64-stack-operation-example/" class="item">ARM Aarch64 Stack Operation Example</a>
-                </div>
-              </div>
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/notes" class="item">notes</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
             
               <div class="item">
                 <div class="content">
                   <a href="/posts/note-for-amazon-sagemaker-enablement-workshop/" class="item">Note for Amazon SageMaker Enablement Workshop</a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        
+      
+        
+
+        
+          <div class="title">
+            <i class="dropdown icon"></i>
+            <a href="/categories/trace32" class="item">trace32</a>
+          </div>
+          <div class="content">
+            <div class="ui list">
+            
+              <div class="item">
+                <div class="content">
+                  <a href="/posts/trace32-basic-operation-based-on-qualcomm-platform/" class="item">Trace32 Basic Operation Based on Qualcomm Platform</a>
                 </div>
               </div>
             

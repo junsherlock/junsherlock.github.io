@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>trace32 on Aeric&#39;s blog</title>
+    <link>https://junsherlock.github.io/categories/trace32/</link>
+    <description>Recent content in trace32 on Aeric&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 16 Nov 2020 10:57:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/categories/trace32/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Trace32 Basic Operation Based on Qualcomm Platform</title>
+      <link>https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/</link>
+      <pubDate>Mon, 16 Nov 2020 10:57:31 +0800</pubDate>
+      
+      <guid>https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/</guid>
+      <description>Trace32 basic operation based on Qualcomm platform  Useful Command do coreX_reg.cmm // load cmm filesd.dump $ADDRESS // View memory address of $ADDRESSd.l $ADDRESS // Show the assembly code of $ADDRESSv.f // View Stack Framer.View // Register viewy.SourcePATH.SetRecurseDir // Set source code pathRefer https://www2.lauterbach.com/pdf/commandlist.pdf for more detail
+ Analysis Step  Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32. Find matched vmlinux and using ramdump parser.</description>
+    </item>
+    
+  </channel>
+</rss>

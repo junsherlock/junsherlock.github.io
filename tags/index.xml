@@ -6,40 +6,40 @@
     <description>Recent content in Tags on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Tue, 27 Oct 2020 16:47:17 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Nov 2020 10:57:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Android</title>
       <link>https://junsherlock.github.io/tags/android/</link>
-      <pubDate>Tue, 27 Oct 2020 16:47:17 +0800</pubDate>
+      <pubDate>Mon, 16 Nov 2020 10:57:31 +0800</pubDate>
       
       <guid>https://junsherlock.github.io/tags/android/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Kernel Module</title>
+      <title>Qualcomm</title>
+      <link>https://junsherlock.github.io/tags/qualcomm/</link>
+      <pubDate>Mon, 16 Nov 2020 10:57:31 +0800</pubDate>
+      
+      <guid>https://junsherlock.github.io/tags/qualcomm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kernel module</title>
       <link>https://junsherlock.github.io/tags/kernel-module/</link>
-      <pubDate>Tue, 27 Oct 2020 16:47:17 +0800</pubDate>
+      <pubDate>Mon, 16 Nov 2020 10:37:58 +0800</pubDate>
       
       <guid>https://junsherlock.github.io/tags/kernel-module/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>aarch64</title>
-      <link>https://junsherlock.github.io/tags/aarch64/</link>
+      <title>stack operation</title>
+      <link>https://junsherlock.github.io/tags/stack-operation/</link>
       <pubDate>Mon, 26 Oct 2020 18:23:56 +0800</pubDate>
       
-      <guid>https://junsherlock.github.io/tags/aarch64/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ARM</title>
-      <link>https://junsherlock.github.io/tags/arm/</link>
-      <pubDate>Mon, 26 Oct 2020 18:23:56 +0800</pubDate>
-      
-      <guid>https://junsherlock.github.io/tags/arm/</guid>
+      <guid>https://junsherlock.github.io/tags/stack-operation/</guid>
       <description></description>
     </item>
     

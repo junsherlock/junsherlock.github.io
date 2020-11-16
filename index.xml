@@ -6,11 +6,21 @@
     <description>Recent content on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Tue, 27 Oct 2020 16:47:17 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Nov 2020 10:57:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Trace32 Basic Operation Based on Qualcomm Platform</title>
+      <link>https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/</link>
+      <pubDate>Mon, 16 Nov 2020 10:57:31 +0800</pubDate>
+      
+      <guid>https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/</guid>
+      <description>Trace32 basic operation based on Qualcomm platform  Useful Command do coreX_reg.cmm // load cmm filesd.dump $ADDRESS // View memory address of $ADDRESSd.l $ADDRESS // Show the assembly code of $ADDRESSv.f // View Stack Framer.View // Register viewy.SourcePATH.SetRecurseDir // Set source code pathRefer https://www2.lauterbach.com/pdf/commandlist.pdf for more detail
+ Analysis Step  Review files(RAMOOPS.bin, RAMDUMP_MSG.txt, dmesg_tz.txt, etc) to determine if need T32. Find matched vmlinux and using ramdump parser.</description>
+    </item>
+    
     <item>
       <title>Example of Dynamic Loadable Kernel Module in Android</title>
       <link>https://junsherlock.github.io/posts/example-of-dynamic-loadable-kernel-module-in-android/</link>
-      <pubDate>Tue, 27 Oct 2020 16:47:17 +0800</pubDate>
+      <pubDate>Mon, 16 Nov 2020 10:37:58 +0800</pubDate>
       
       <guid>https://junsherlock.github.io/posts/example-of-dynamic-loadable-kernel-module-in-android/</guid>
       <description>Example of dynamic loadable Kernel module in Android What is kernel module  Mostly use on driver or hardware related Different to userspace process Reducing linux kernel, makes linux more flexible Customize specific functionally system  kernel module fundamental knowledge Command &amp;gt; lsmod --&amp;gt; List current kernel module (or $ cat /proc/modules)&amp;gt; insmod ${XXX.ko} --&amp;gt; Load XXX.ko&amp;gt; rmmod ${XXX.ko} --&amp;gt; Remove XXXX.koCoding  Include init and exit func at least Must #include &amp;lt;linux/module.</description>

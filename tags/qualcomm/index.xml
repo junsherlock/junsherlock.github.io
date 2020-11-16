@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Aeric&#39;s blog</title>
-    <link>https://junsherlock.github.io/posts/</link>
-    <description>Recent content in Posts on Aeric&#39;s blog</description>
+    <title>Qualcomm on Aeric&#39;s blog</title>
+    <link>https://junsherlock.github.io/tags/qualcomm/</link>
+    <description>Recent content in Qualcomm on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 16 Nov 2020 10:57:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Nov 2020 10:57:31 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/qualcomm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Trace32 Basic Operation Based on Qualcomm Platform</title>
       <link>https://junsherlock.github.io/posts/trace32-basic-operation-based-on-qualcomm-platform/</link>
@@ -24,24 +24,6 @@
       
       <guid>https://junsherlock.github.io/posts/example-of-dynamic-loadable-kernel-module-in-android/</guid>
       <description>Example of dynamic loadable Kernel module in Android What is kernel module  Mostly use on driver or hardware related Different to userspace process Reducing linux kernel, makes linux more flexible Customize specific functionally system  kernel module fundamental knowledge Command &amp;gt; lsmod --&amp;gt; List current kernel module (or $ cat /proc/modules)&amp;gt; insmod ${XXX.ko} --&amp;gt; Load XXX.ko&amp;gt; rmmod ${XXX.ko} --&amp;gt; Remove XXXX.koCoding  Include init and exit func at least Must #include &amp;lt;linux/module.</description>
-    </item>
-    
-    <item>
-      <title>ARM Aarch64 Stack Operation Example</title>
-      <link>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</link>
-      <pubDate>Mon, 26 Oct 2020 18:23:56 +0800</pubDate>
-      
-      <guid>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</guid>
-      <description>ARM aarch64 stack operation example 前情提要: AArch64 Register Special Role in the procedure call standard x0…x7 Parameter/result registers x8 Indirect result location register x9..x15 Temporary registers x16 IP0 The first intra-procedure-call scratch register (can be used by call veneers and PLT code); at other times may be used as a temporary register. x17 IP1 The second intra-procedure-call temporary register (can be used</description>
-    </item>
-    
-    <item>
-      <title>Note for Amazon SageMaker Enablement Workshop</title>
-      <link>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</link>
-      <pubDate>Thu, 22 Oct 2020 13:52:57 +0800</pubDate>
-      
-      <guid>https://junsherlock.github.io/posts/note-for-amazon-sagemaker-enablement-workshop/</guid>
-      <description>一些筆記, 主要內容比較針對ML Note for Amazon SageMaker Enablement Workshop Techinical trainer: Cathy Lai basis ML flow 基本上這張圖解釋了ML在解決問題的整個flow Machine Learning Mechanisim ML type unsupervised clustering (ex: 推薦系統) dimensionalitty reduction supervised classification (ex: 股</description>
     </item>
     
   </channel>

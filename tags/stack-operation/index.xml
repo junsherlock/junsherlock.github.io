@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ARM on Aeric&#39;s blog</title>
-    <link>https://junsherlock.github.io/tags/arm/</link>
-    <description>Recent content in ARM on Aeric&#39;s blog</description>
+    <title>stack operation on Aeric&#39;s blog</title>
+    <link>https://junsherlock.github.io/tags/stack-operation/</link>
+    <description>Recent content in stack operation on Aeric&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 26 Oct 2020 18:23:56 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/arm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Oct 2020 18:23:56 +0800</lastBuildDate><atom:link href="https://junsherlock.github.io/tags/stack-operation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ARM Aarch64 Stack Operation Example</title>
       <link>https://junsherlock.github.io/posts/arm-aarch64-stack-operation-example/</link>
